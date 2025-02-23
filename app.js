@@ -12,7 +12,65 @@ let nameTest = /^[A-Z][A-Za-z0-9]{4,}$/;
 let priceTest = /^(100|[1-9][0-9]{2}|1000)$/;
 let descriptionTest = /^[a-zA-z0-9]{20,}$/;
 
-console.log(inputs);
+let setToLocalStorage = (productList) => {
+    localStorage.setItem("productList", JSON.stringify(productList));
+}
+
+// Delete Elements
+
+let deleteElement = () => {
+    let deleteButton = document.querySelectorAll(".delete");
+    deleteButton.forEach(function(e) {
+    e.addEventListener('click', function() {
+        deletedIndex = Array.from(deleteButton).indexOf(e);
+        productList.splice(deletedIndex,1);
+        setToLocalStorage(productList);
+        display();
+    })
+})
+}
+
+// Update Element
+
+let updateElement = () => {
+    let updateButton = document.querySelectorAll(".update");
+    updateButton.forEach(function(e) {
+        e.addEventListener('click', function() {
+            updateIndex = Array.from(updateButton).indexOf(e);
+            productName.value = productList[updateIndex].prodName;
+            productPrice.value = productList[updateIndex].prodPrice;
+            productDescription.value = productList[updateIndex].prodDescription;
+            addButton.innerHTML = "Update";
+        })
+    })
+}
+
+// Display ELements
+
+let display = () => {
+    tableBody.innerHTML = '';
+    for (let i = 0; i < productList.length; i++) {
+        let text = `<tr>
+            <td>${productList[i].prodName}</td>
+            <td>${productList[i].prodPrice}</td>
+            <td>${productList[i].prodDescription}</td>
+            <td><button class="btn btn-success update">Update</button></td>
+            <td><button class="btn btn-danger delete">Delete</button></td>
+        </tr>`;
+            tableBody.innerHTML += text;
+            deleteElement();
+            updateElement();
+    }
+}
+
+// Clear input form
+
+let clearInput = () => {
+    productName.value = '';
+    productPrice.value = '';
+    productDescription.value = '';
+}
+
 
 if (localStorage.getItem("productList") === null) {
     productList = [];
@@ -23,9 +81,7 @@ if (localStorage.getItem("productList") === null) {
 display();
 
 // Add Elements
-
-addButton.addEventListener('click', addItems);
-function addItems() {
+let addItems = () => {
     // Test input
     let isValid = true;
     inputs.forEach(function(e) {    
@@ -86,62 +142,4 @@ function addItems() {
         e.classList.remove('is-valid');
     })
 }
-
-function setToLocalStorage(productList) {
-    localStorage.setItem("productList", JSON.stringify(productList));
-}
-
-// Delete Elements
-
-function deleteElement() {
-    let deleteButton = document.querySelectorAll(".delete");
-    deleteButton.forEach(function(e) {
-    e.addEventListener('click', function() {
-        deletedIndex = Array.from(deleteButton).indexOf(e);
-        productList.splice(deletedIndex,1);
-        setToLocalStorage(productList);
-        display();
-    })
-})
-}
-
-// Update Element
-
-function updateElement() {
-    let updateButton = document.querySelectorAll(".update");
-    updateButton.forEach(function(e) {
-        e.addEventListener('click', function() {
-            updateIndex = Array.from(updateButton).indexOf(e);
-            productName.value = productList[updateIndex].prodName;
-            productPrice.value = productList[updateIndex].prodPrice;
-            productDescription.value = productList[updateIndex].prodDescription;
-            addButton.innerHTML = "Update";
-        })
-    })
-}
-
-// Display ELements
-
-function display() {
-    tableBody.innerHTML = '';
-    for (let i = 0; i < productList.length; i++) {
-        let text = `<tr>
-            <td>${productList[i].prodName}</td>
-            <td>${productList[i].prodPrice}</td>
-            <td>${productList[i].prodDescription}</td>
-            <td><button class="btn btn-success update">Update</button></td>
-            <td><button class="btn btn-danger delete">Delete</button></td>
-        </tr>`;
-            tableBody.innerHTML += text;
-            deleteElement();
-            updateElement();
-    }
-}
-
-// Clear input form
-
-function clearInput() {
-    productName.value = '';
-    productPrice.value = '';
-    productDescription.value = '';
-}
+addButton.addEventListener('click', addItems);
